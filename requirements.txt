@@ -1,0 +1,6 @@
+pandas
+Jinja2
+python-dotenv
+
+for terminal:
+(pip install -r requirements.txt)

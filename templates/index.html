@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Master</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .container { max-width: 800px; margin-top: 10px; margin-left: 50px; margin-right: 50px; margin-bottom: 10px;}
+        .alerts {margin-top: 5px; margin-left: 50px; margin-bottom: 5px;}
+        label { display: block; margin: 10px 0 5px; }
+        .file-list { list-style: none; padding: 0; }
+        .file-list li { margin: 5px 0; }
+        button { margin-top: 20px; padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .checkbox-label { margin-right: 10px; }
+
+        /* Flash message styling */
+        .alert{
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .alert-success{
+            background-color: #d4edda;
+            color: #155724;
+            font-size: 15px;
+        }
+
+        .alert-error{
+            background-color: #f8d7da;
+            color: #721c24;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-top: 50px; margin-left: 50px; margin-bottom: 20px; margin-right: 50px;">
+        <h1>Cloud Master - Web Email Sender</h1>
+    </div>
+    <section class="alerts">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </section>
+
+    <section class="container">
+        <!-- Excel File Upload -->
+        <section class="upload_excel_1">
+        <form action="/upload_excel" method="POST" enctype="multipart/form-data">
+            <label for="excelFile">Upload Excel File:</label>
+            <input type="file" name="excelFile" id="excelFile" accept=".xlsx">
+            <button type="submit">Upload Excel</button>
+        </form>
+        </section>
+
+        
+
+        <!-- Template File Upload -->
+        <section style="margin-top: 50px;">
+        <form action="/upload_template" method="POST" enctype="multipart/form-data">
+            <label for="templateFile">Upload HTML Template:</label>
+            <input type="file" name="templateFile" id="templateFile" accept=".html">
+            <button type="submit">Upload Template</button>
+        </form>
+        </section>
+
+        <!-- Send Emails Button -->
+        <form action="/send_emails" method="POST">
+            <!-- List of Uploaded Excel Files -->
+            <h2>Uploaded Excel Files</h2>
+            <ul class="file-list" id="excel-list">
+                <!-- Dynamically list uploaded Excel files with checkboxes -->
+                {% for file in excel_files %}
+                    <li>
+                        <label class="checkbox-label">
+                            <input type="radio" name="selected_excel" value="{{ file }}"> {{ file }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- List of Uploaded HTML Templates -->
+            <h2>Uploaded Templates</h2>
+            <ul class="file-list" id="template-list">
+                <!-- Dynamically list uploaded template files with checkboxes -->
+                {% for file in template_files %}
+                    <li>
+                        <label class="checkbox-label">
+                            <input type="radio" name="selected_template" value="{{ file }}"> {{ file }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <button type="submit">Send Emails</button>
+        </form>
+    </section>
+    <script>
+        setTimeout(function() {
+            var flashMessages = document.querySelectorAll('.alert');
+            flashMessages.forEach(function(message) {
+                message.style.display = 'none';
+            });
+        }, 10000); // 10000 milliseconds = 10 seconds
+    </script>
+</body>
+</html>
